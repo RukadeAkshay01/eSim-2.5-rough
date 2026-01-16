@@ -196,26 +196,11 @@ compile_verilog_models() {
 }
 
 
-# Configure ngspice to load IHP OSDI models
+# Configure ngspice to load IHP OSDI models (adds to NGHDL spinit only)
 configure_spiceinit() {
     log "Configuring ngspice to load IHP OSDI models..."
     
-    IHP_SPICEINIT="$PDK_ROOT/ihp-sg13g2/libs.tech/ngspice/.spiceinit"
-    
-    # Add to user's .spiceinit (for standalone ngspice usage)
-    if [[ -f "$IHP_SPICEINIT" ]]; then
-        if ! grep -q "IHP-Open-PDK" "$SPICEINIT" 2>/dev/null; then
-            echo "" >> "$SPICEINIT"
-            echo "* ========== IHP-Open-PDK OSDI Models ==========" >> "$SPICEINIT"
-            cat "$IHP_SPICEINIT" >> "$SPICEINIT"
-            echo "* ========== End IHP-Open-PDK ==========" >> "$SPICEINIT"
-            log "Added IHP OSDI models to ~/.spiceinit"
-        else
-            log "IHP models already configured in ~/.spiceinit"
-        fi
-    fi
-    
-    # Also add to NGHDL's spinit if it exists
+    # Add to NGHDL's spinit if it exists
     if [[ -f "$NGHDL_SPINIT" ]]; then
         if ! grep -q "IHP-Open-PDK" "$NGHDL_SPINIT" 2>/dev/null; then
             # Add OSDI loading after the existing osdi block
@@ -233,7 +218,12 @@ configure_spiceinit() {
             echo "end" >> "$NGHDL_SPINIT"
             echo "* ========== End IHP-Open-PDK ==========" >> "$NGHDL_SPINIT"
             log "Added IHP OSDI models to NGHDL spinit"
+        else
+            log "IHP models already configured in NGHDL spinit"
         fi
+    else
+        log "⚠️ NGHDL spinit not found at $NGHDL_SPINIT"
+        log "   Please install NGHDL first, then re-run IHP installation"
     fi
     
     log "✅ Spiceinit configuration complete"
@@ -261,12 +251,6 @@ uninstall_ihp() {
     if grep -q "IHP Open PDK" "$BASHRC"; then
         sed -i '/# --- IHP Open PDK/,/# --- End IHP Open PDK ---/d' "$BASHRC"
         echo "Removed IHP entries from ~/.bashrc"
-    fi
-    
-    # Clean up .spiceinit (remove IHP section)
-    if grep -q "IHP-Open-PDK" "$SPICEINIT" 2>/dev/null; then
-        sed -i '/IHP-Open-PDK/,/End IHP-Open-PDK/d' "$SPICEINIT"
-        echo "Removed IHP entries from ~/.spiceinit"
     fi
     
     # Clean up NGHDL spinit (remove IHP section)

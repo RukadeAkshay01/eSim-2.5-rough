@@ -669,37 +669,6 @@ class Convert:
                         print(f"  Corner: {ihp_corner}")
                         print(f"  Params: {ihp_params}")
                         
-                        # Create .spiceinit with OSDI loading (only once per project)
-                        if not hasattr(self, 'ihp_spiceinit_written'):
-                            self.ihp_spiceinit_written = True
-                            
-                            # Derive OSDI path from lib path
-                            # lib path: .../models/cornerMOSlv.lib
-                            # osdi path: .../osdi/
-                            lib_dir = os.path.dirname(ihp_lib_path)
-                            ihp_osdi_path = lib_dir.replace('/models', '/osdi')
-                            
-                            (filepath, filemname) = os.path.split(self.clarg1)
-                            self.Fileopen = os.path.join(filepath, ".spiceinit")
-                            print("Writing .spiceinit for IHP SG13G2")
-                            self.writefile = open(self.Fileopen, "w")
-                            self.writefile.write('''
-* IHP SG13G2 PDK Configuration
-set ngbehavior=hsa     ; set compatibility for reading PDK libs
-set ng_nomodcheck      ; don't check the model parameters
-set num_threads=8      ; CPU hardware threads available
-option noinit          ; don't print operating point data
-
-* Load OSDI models
-''')
-                            osdi_files = ['psp103.osdi', 'psp103_nqs.osdi', 
-                                         'r3_cmc.osdi', 'mosvar.osdi']
-                            for osdi_file in osdi_files:
-                                osdi_full = os.path.join(ihp_osdi_path, osdi_file)
-                                if os.path.exists(osdi_full):
-                                    self.writefile.write(f'osdi {osdi_full}\n')
-                            self.writefile.close()
-                        
                         # Add .lib include for this device's corner
                         if ihp_lib_path and os.path.exists(ihp_lib_path):
                             lib_include = f'.lib "{ihp_lib_path}" {ihp_corner}'

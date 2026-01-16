@@ -412,14 +412,14 @@ if [ $option == "--install" ];then
     fi
 
     #Calling functions
-    # createConfigFile
-    # installDependency
-    # installKicad
-    # copyKicadLibrary
-    # installNghdl
-    # installSky130Pdk
+    createConfigFile
+    installDependency
+    installKicad
+    copyKicadLibrary
+    installNghdl
+    installSky130Pdk
     installIhpPdk              
-    # createDesktopStartScript
+    createDesktopStartScript
 
     if [ $? -ne 0 ];then
         echo -e "\n\n\nERROR: Unable to install required packages. Please check your internet connection.\n\n"

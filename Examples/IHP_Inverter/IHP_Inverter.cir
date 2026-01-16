@@ -1,0 +1,31 @@
+* /home/akshay_rukade/eSim-2.5/Examples/IHP_Inverter/IHP_Inverter.cir
+
+* EESchema Netlist Version 1.1 (Spice format) creation date: 16/01/26 00:30:00
+
+* To exclude a component from the Spice Netlist add [Spice_Netlist_Enabled] user FIELD set to: N
+* To reorder the component spice node sequence add [Spice_Node_Sequence] user FIELD and define sequence: 2,1,0
+
+* Sheet Name: /
+* Simple CMOS Inverter with IHP SG13G2 PDK
+* No ihpmode marker needed - detection via sg13 in model name
+
+* PMOS transistor (pull-up)
+ihp1  out in vdd vdd sg13_lv_pmos
+
+* NMOS transistor (pull-down)  
+ihp2  out in gnd gnd sg13_lv_nmos
+
+* Power supply
+v1  vdd gnd dc
+
+* Input pulse
+v2  in gnd pulse
+
+* Plot markers
+U1  out plot_v1
+U2  in plot_v1
+U3  vdd plot_v1
+
+.end
+
+
